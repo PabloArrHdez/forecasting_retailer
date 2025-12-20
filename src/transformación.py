@@ -67,3 +67,30 @@ def columnnas (df):
     df['es_fin_mes'] = df['fecha'].dt.is_month_end
     return df
 
+def lags (df):
+    for producto in df['producto_id'].unique():
+        for anio in df[df['producto_id'] == producto]['año'].unique():
+            mask = (df['producto_id'] == producto) & (df['año'] == anio)
+            df.loc[mask, 'lag1'] = df.loc[mask, 'unidades_vendidas'].shift(1)
+            df.loc[mask, 'lag2'] = df.loc[mask, 'unidades_vendidas'].shift(2)
+            df.loc[mask, 'lag3'] = df.loc[mask, 'unidades_vendidas'].shift(3)
+            df.loc[mask, 'lag4'] = df.loc[mask, 'unidades_vendidas'].shift(4)
+            df.loc[mask, 'lag5'] = df.loc[mask, 'unidades_vendidas'].shift(5)
+            df.loc[mask, 'lag6'] = df.loc[mask, 'unidades_vendidas'].shift(6)
+            df.loc[mask, 'lag7'] = df.loc[mask, 'unidades_vendidas'].shift(7)
+            df.loc[mask, 'media_movil_7d'] = df.loc[mask, 'unidades_vendidas'].rolling(window=7, min_periods=1).mean()
+    # Eliminar registros con nulos en los nuevos lags o media móvil
+    df = df.dropna(subset=['lag1','lag2','lag3','lag4','lag5','lag6','lag7','media_movil_7d']).reset_index(drop=True)
+    return df
+
+def descuento (df):
+    # Crear variable de descuento en porcentaje
+    df['descuento'] = ((df['precio_venta'] - df['precio_base']) / df['precio_base']) * 100
+    return df
+
+def calculos (df):
+    # Calcular el precio promedio de la competencia
+    df['precio_competencia'] = df[['Amazon', 'Decathlon', 'Deporvillage']].mean(axis=1)
+    # Calcular el ratio de nuestro precio respecto a la competencia
+    df['ratio_precio'] = df['precio_venta'] / df['precio_competencia']
+    return df

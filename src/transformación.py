@@ -94,3 +94,14 @@ def calculos (df):
     # Calcular el ratio de nuestro precio respecto a la competencia
     df['ratio_precio'] = df['precio_venta'] / df['precio_competencia']
     return df
+
+def eliminacion_columnas (df):
+    df = df.drop(columns=['Amazon', 'Decathlon', 'Deporvillage'])
+    return df
+
+def nuevas_columnas (df):
+    # Crear copias de las variables categóricas con sufijo _h
+    df['nombre_h'] = df['nombre']
+    df['categoria_h'] = df['categoria']
+    df['subcategoria_h'] = df['subcategoria']
+    return df

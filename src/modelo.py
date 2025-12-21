@@ -18,6 +18,12 @@ def entrenamiento (df):
     print(f"Registros en train_df: {len(train_df)}")
     print(f"Registros en validation_df: {len(validation_df)}")
 
+def train_validation (df):
+    # Dividir el dataframe en train y validation según el año
+    train_df = df[df['año'].isin([2021, 2022, 2023])].copy()
+    validation_df = df[df['año'] == 2024].copy()
+    return validation_df, train_df
+
 def estimador (df):
     class ColumnSelector(BaseEstimator, TransformerMixin):
         """Selecciona columnas específicas excluyendo las no deseadas."""

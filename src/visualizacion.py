@@ -74,3 +74,30 @@ def densidad_precios (df):
     plt.legend()
     plt.tight_layout()
     plt.show();
+
+def prediccion_realidad (df):
+    # Filtrar datos de noviembre 2024 y productos estrella
+    df_nov2024 = df[(df['año'] == 2024) & (df['mes'] == 11) & (df['es_estrella'] == 1)].copy()
+    productos_estrella = df_nov2024['producto_id'].unique()
+    # Usar las mismas columnas predictoras que en el entrenamiento
+    X_cols = [col for col in df_nov2024.columns if col not in ['fecha', 'ingresos', 'unidades_vendidas'] and df_nov2024[col].dtype != 'O']
+    for producto in productos_estrella:
+        datos_prod = df_nov2024[df_nov2024['producto_id'] == producto].copy()
+        if datos_prod.empty:
+            continue
+        X_prod = datos_prod[X_cols]
+        y_real = datos_prod['unidades_vendidas']
+        fechas = datos_prod['fecha']
+        y_pred = pipeline.predict(X_prod)
+        nombre = datos_prod['nombre'].iloc[0] if 'nombre' in datos_prod.columns else str(producto)
+        plt.figure(figsize=(10,4))
+        plt.plot(fechas, y_real, marker='o', label='Realidad')
+        plt.plot(fechas, y_pred, marker='x', label='Predicción')
+        plt.title(f'Predicción vs Realidad - {nombre}')
+        plt.xlabel('Fecha')
+        plt.ylabel('Unidades vendidas')
+        plt.legend()
+        plt.grid(True)
+        plt.tight_layout()
+        plt.show();
+

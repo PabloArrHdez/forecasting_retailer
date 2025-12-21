@@ -47,7 +47,7 @@ def estimador (df):
     def get_feature_names_out(self, input_features=None):
         return np.array(self.feature_names_)
     
-def Pipeline (df):
+def modelo_train (df):
     pipeline = Pipeline([
         ('selector', ColumnSelector(
         exclude_cols=['fecha', 'ingresos', 'unidades_vendidas'],
@@ -69,3 +69,21 @@ def Pipeline (df):
     y_pred = pipeline.predict(validation_df)
     # Baseline naive (referencia)
     y_pred_naive = np.full(len(validation_df), train_df['unidades_vendidas'].mean())
+
+    def modelo_final (df):
+        pipeline_final = Pipeline([
+            ('selector', ColumnSelector(
+                exclude_cols=['fecha', 'ingresos', 'unidades_vendidas', 
+                      'nombre', 'producto_id', 'categoria', 'subcategoria'],
+                exclude_dtypes=['O']
+            )),
+            ('scaler', StandardScaler()),
+            ('model', HistGradientBoostingRegressor(
+                learning_rate=0.05,
+                max_iter=400,
+                max_depth=7,
+                l2_regularization=1.0,
+                early_stopping=True,
+                random_state=42
+            ))
+        ])

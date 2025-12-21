@@ -7,14 +7,14 @@ La interfaz utilizada para que el cliente final interactúe con el modelo es la 
 
 ---
 
-## Data sources
+## Data sources (cambiar)
 
 - Kaggle [Kaggle](https://www.kaggle.com/datasets/zahidmughal2343/video-games-sale)
 - Kaggle [Kaggle](https://www.kaggle.com/datasets/beridzeg45/video-games)
 
 ---
 
-##  ¿Qué hace esta aplicación?
+##  ¿Qué hace esta aplicación? (cambiar)
 
 Permite al usuario:
 - Introducir información sobre un videojuego (género, consola, precio, etc.)
@@ -33,7 +33,7 @@ Finalmente, entrena un modelo de XG Boost con los datos preprocesados y realiza 
 
 ---
 
-##  Variables independientes utilizadas
+##  Variables independientes utilizadas (cambiar)
 
 - Consola (`Platform`).
 - Año de lanzamiento del videojuego (`Year`).
@@ -58,7 +58,7 @@ Las variables ocultas (`Precio_relativo`, `Nombre_Base`, `Años_desde_lanzamient
 
 ---
 
-##  Resultados del modelo
+##  Resultados del modelo (cambiar)
 
 ```text
 Random Forest Classification Report:

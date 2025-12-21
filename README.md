@@ -1,9 +1,8 @@
-#  Predicción de Ventas de Videojuegos
+#  Predicción de Ventas de Productos Deportivos.
 
 ## Overview 
 
-Este proyecto se centra en la materialización de 'MVP' (Mínimo Producto Viable), basado en la creación, desarrollo y uso de un modelo predictivo sobre cuántas ventas va a tener un videojuego si sale al mercado, teniendo en cuenta una serie de características, previamente definidas y una base de datos sobre ventas de videojuegos pasados. 
-
+Este proyecto se centra en la materialización de 'MVP' (Mínimo Producto Viable), basado en la creación, desarrollo y uso de un modelo predictivo sobre la previsión de ventas para saber cuantas unidades de cada producto se van a vender cada día, de noviembre de 2025, incluyendo "BlackFriday".
 La interfaz utilizada para que el cliente final interactúe con el modelo es la facilitada por **Streamlit**.
 
 ---
@@ -28,11 +27,9 @@ Permite al usuario:
 
 ##  Modelo utilizado
 
-Se ha entrenado un modelo de **Random Forest Classifier** con un pipeline de preprocesamiento.
+Se ha entrenado un modelo de **XG Boost** con un pipeline de preprocesamiento.
 Primero, divide el conjunto de datos en entrenamiento y prueba, estratificando por la variable objetivo. Luego, separa las variables numéricas y categóricas para aplicar un preprocesamiento adecuado: escalado estándar para las numéricas (`StandardScaler`) y codificación one-hot para las categóricas (`OneHotEncoder`). 
-Finalmente, entrena un modelo de Random Forest con los datos preprocesados y realiza predicciones sobre el conjunto de prueba.
-
-El modelo alcanza una precisión del **70%** con las tres clases previamente descritas.
+Finalmente, entrena un modelo de XG Boost con los datos preprocesados y realiza predicciones sobre el conjunto de prueba.
 
 ---
 

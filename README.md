@@ -67,9 +67,3 @@ Random Forest Classification Report:
   - Alta: Precision 0.57, Recall 0.48
   - Normal: Precision 0.75, Recall 0.88
 ```
-
----
-
-##  Autor
-
-**Pablo Arrastia Hernández** 

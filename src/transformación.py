@@ -105,3 +105,6 @@ def nuevas_columnas (df):
     df['categoria_h'] = df['categoria']
     df['subcategoria_h'] = df['subcategoria']
     return df
+def dumies (df):
+    df = pd.get_dummies(df, columns=['nombre_h', 'categoria_h', 'subcategoria_h'], drop_first=True)
+    return df

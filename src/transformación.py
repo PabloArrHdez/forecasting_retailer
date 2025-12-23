@@ -3,8 +3,10 @@ import holidays
 
 ventas_data = r"D:\forecasting_retailer\data\raw\training\ventas.csv"
 competencia_data = r"D:\forecasting_retailer\data\raw\training\competencia.csv"
+inferencia_data = r"D:\forecasting_retailer\data\raw\inference\ventas_2025_inferencia.csv"
 ventas_df = pd.read_csv(ventas_data)
 competencia_df = pd.read_csv(competencia_data)
+inferencia_df = pd.read_csv(inferencia_data)
 
 def fecha (ventas_df,competencia_df):
     ventas_df['fecha'] = pd.to_datetime(ventas_df['fecha'])
@@ -108,3 +110,65 @@ def nuevas_columnas (df):
 def dumies (df):
     df = pd.get_dummies(df, columns=['nombre_h', 'categoria_h', 'subcategoria_h'], drop_first=True)
     return df
+
+def fecha_inferencia (inferencia_df):
+    inferencia_df['fecha'] = pd.to_datetime(inferencia_df['fecha'])
+    inferencia_df['año'] = inferencia_df['fecha'].dt.year
+    inferencia_df['mes'] = inferencia_df['fecha'].dt.month
+    inferencia_df['dia_mes'] = inferencia_df['fecha'].dt.day
+    inferencia_df['dia_semana'] = inferencia_df['fecha'].dt.weekday
+    inferencia_df['nombre_dia'] = inferencia_df['fecha'].dt.day_name(locale='es_ES')
+    inferencia_df['es_fin_semana'] = inferencia_df['dia_semana'].isin([5, 6])
+    return inferencia_df
+
+def festivo_inferencia (inferencia_df):
+    festivos_es = []
+    for year in inferencia_df['año'].unique():
+        festivos_es += [d for d in holidays.country_holidays('ES', years=[year]).keys()]
+    inferencia_df['es_festivo'] = inferencia_df['fecha'].isin(festivos_es)
+    return inferencia_df
+
+def es_black_friday_inferencia(inferencia_df):
+    if inferencia_df.month == 11:
+        ultimo_viernes = max([d for d in pd.date_range(start=inferencia_df.replace(day=1), end=inferencia_df.replace(day=30)) if d.weekday() == 4])
+        return inferencia_df == ultimo_viernes
+    return False
+
+def es_cyber_monday_inferencia(inferencia_df):
+    if inferencia_df.month == 11:
+        ultimo_viernes = max([d for d in pd.date_range(start=inferencia_df.replace(day=1), end=inferencia_df.replace(day=30)) if d.weekday() == 4])
+        cyber_monday = ultimo_viernes + pd.Timedelta(days=3)
+        return fecha == cyber_monday
+    return False
+
+def columna_inferencia (inferencia_df):
+    inferencia_df['es_black_friday'] = inferencia_df['fecha'].apply(es_black_friday)
+    inferencia_df['es_cyber_monday'] = inferencia_df['fecha'].apply(es_cyber_monday)
+    inferencia_df['semana_anio'] = inferencia_df['fecha'].dt.isocalendar().week
+    inferencia_df['trimestre'] = inferencia_df['fecha'].dt.quarter
+    inferencia_df['dia_anio'] = inferencia_df['fecha'].dt.dayofyear
+    inferencia_df['es_inicio_mes'] = inferencia_df['dia_mes'] == 1
+    inferencia_df['es_fin_mes'] = inferencia_df['fecha'].dt.is_month_end
+    competencia_cols = ['Amazon', 'Decathlon', 'Deporvillage']
+    if all(col in inferencia_df.columns for col in competencia_cols):
+        inferencia_df['precio_competencia'] = inferencia_df[competencia_cols].mean(axis=1)
+        inferencia_df['ratio_precio'] = inferencia_df['precio_venta'] / inferencia_df['precio_competencia']
+    else:
+        inferencia_df['precio_competencia'] = np.nan
+        inferencia_df['ratio_precio'] = np.nan
+    inferencia_df['descuento'] = ((inferencia_df['precio_venta'] - inferencia_df['precio_base']) / inferencia_df['precio_base']) * 100
+    return inferencia_df
+
+def lags_inferencia (inferencia_df):
+    for lag in range(1, 8):
+        inferencia_df[f'lag{lag}'] = inferencia_df.groupby('producto_id')['unidades_vendidas'].shift(lag)
+    inferencia_df['media_movil_7d'] = inferencia_df.groupby('producto_id')['unidades_vendidas'].rolling(window=7, min_periods=1).mean().reset_index(level=0, drop=True)
+    return inferencia_df
+
+def nuevas_columnas_inferencia (inferencia_df):
+    inferencia_df['nombre_h'] = inferencia_df['nombre']
+    inferencia_df['categoria_h'] = inferencia_df['categoria']
+    inferencia_df['subcategoria_h'] = inferencia_df['subcategoria']
+    inferencia_df = pd.get_dummies(inferencia_df, columns=['nombre_h', 'categoria_h', 'subcategoria_h'], drop_first=True)
+    inferencia_df = inferencia_df[inferencia_df['mes'] == 11].reset_index(drop=True)
+    return inferencia_df

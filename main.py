@@ -48,3 +48,12 @@ trs.es_cyber_monday_inferencia(inferencia_df)
 trs.columna_inferencia(inferencia_df)
 trs.lags_inferencia(inferencia_df)
 trs.nuevas_columnas_inferencia(inferencia_df)
+
+vsl.unidades_vendidas_año (df)
+vsl.unidades_vendidas_semana (df)
+vsl.unidades_vendidas_categoria (df)
+vsl.unidades_vendidas_subcat (df)
+vsl.top_productos (df)
+vsl.densidad_precios (df)
+vsl.prediccion_realidad (df)
+

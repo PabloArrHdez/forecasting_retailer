@@ -2,9 +2,11 @@ import pandas as pd
 
 ventas_data = r"D:\forecasting_retailer\data\raw\training\ventas.csv"
 competencia_data = r"D:\forecasting_retailer\data\raw\training\competencia.csv"
+inferencia_data = r"D:\forecasting_retailer\data\raw\inference\ventas_2025_inferencia.csv"
 
 ventas_df = pd.read_csv(ventas_data)
 competencia_df = pd.read_csv(competencia_data)
+inferencia_df = pd.read_csv(inferencia_data)
 
 def validacion_datos (ventas_df, competencia_df):
     print("Tipos de variables")

@@ -14,13 +14,3 @@ Primero, divide el conjunto de datos en entrenamiento y prueba, estratificando p
 Finalmente, entrena un modelo de XG Boost con los datos preprocesados y realiza predicciones sobre el conjunto de prueba.
 
 ---
-
-##  Resultados del modelo (cambiar)
-
-```text
-Random Forest Classification Report:
-  Accuracy: 70%
-  - Muy Alta: Precision 0.70, Recall 0.38
-  - Alta: Precision 0.57, Recall 0.48
-  - Normal: Precision 0.75, Recall 0.88
-```

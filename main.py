@@ -21,9 +21,11 @@ import src.visualizacion as vsl
 ventas_data = r"D:\forecasting_retailer\data\raw\training\ventas.csv"
 competencia_data = r"D:\forecasting_retailer\data\raw\training\competencia.csv"
 inferencia_data = r"D:\forecasting_retailer\data\raw\inference\ventas_2025_inferencia.csv"
+df_data = r"D:\forecasting_retailer\data\processed\df.csv"
 ventas_df = pd.read_csv(ventas_data)
 competencia_df = pd.read_csv(competencia_data)
 inferencia_df = pd.read_csv(inferencia_data)
+df = pd.read_csv(df_data)
 
 ext.validacion_datos (ventas_df, competencia_df)
 ext.nulos (ventas_df, competencia_df)
@@ -58,3 +60,8 @@ vsl.densidad_precios (df)
 vsl.prediccion_realidad (df)
 
 
+mdl.entrenamiento (df)
+mdl.train_validation (df)
+mdl.estimador (df)
+mdl.modelo_train (df)
+mdl.

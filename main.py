@@ -24,3 +24,10 @@ inferencia_data = r"D:\forecasting_retailer\data\raw\inference\ventas_2025_infer
 ventas_df = pd.read_csv(ventas_data)
 competencia_df = pd.read_csv(competencia_data)
 inferencia_df = pd.read_csv(inferencia_data)
+
+ext.validacion_datos (ventas_df, competencia_df)
+ext.nulos (ventas_df, competencia_df)
+ext.duplicados (ventas_df, competencia_df)
+ext.descriptivo (ventas_df, competencia_df)
+ext.resumen_final (ventas_df, competencia_df)
+

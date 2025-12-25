@@ -1,3 +1,7 @@
+import streamlit as st
+import pandas as pd
+import joblib
+
 # Configuración de la página
 st.set_page_config(
     page_title="Predicciones Ventas Noviembre 2025",

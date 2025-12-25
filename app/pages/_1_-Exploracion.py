@@ -5,7 +5,7 @@ st.markdown(
     f"""
     <style>
     .stApp {{
-        background-image: url("https://images.unsplash.com/photo-1597840900616-664e930c29df?q=80&w=1925&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D");
+        background-image: url("https://images.pexels.com/photos/1750045/pexels-photo-1750045.jpeg");
         background-size: cover;
         background-repeat: no-repeat;
         background-attachment: fixed;

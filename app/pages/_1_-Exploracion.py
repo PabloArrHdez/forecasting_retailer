@@ -47,39 +47,13 @@ st.markdown(
     unsafe_allow_html=True
 )
 
-st.title ("Explorador de videojuegos (1980-2020) 🕵🏼‍♂️​.")
+st.title ("Explorador de artículos deportivos (2021-2024) 🕵🏼‍♂️​.")
 
-df = pd.read_csv('Data/video_games_sales_completo.csv')
+ventas_data = r"D:\forecasting_retailer\data\raw\training\ventas.csv"
+competencia_data = r"D:\forecasting_retailer\data\raw\training\competencia.csv"
 
-st.dataframe(df)
+ventas_df = pd.read_csv(ventas_data)
+competencia_df = pd.read_csv(competencia_data)
 
-## Sidebar para filtros ##
-st.sidebar.header("Filtrar")
-estado_consola = st.sidebar.multiselect("Estado Consola", df["Estado_Consola"].unique())
-genero = st.sidebar.multiselect("Genero", df["Genre"].unique())
-pegi_categoria = st.sidebar.multiselect("PEGI", df["PEGI_categoria"].unique())
-duracion_juego = st.sidebar.multiselect("Duración", df["Duracion_juego_cat"].unique())
-precio_min, precio_max = df["Price"].min(), df["Price"].max()
-price_range = st.sidebar.slider("Precio Videojuego", precio_min, precio_max, (precio_min, precio_max))
-
-
-# Aplicar filtros uno a uno (solo si hay selección)
-df_filtrado = df.copy()
-
-if estado_consola:
-    df_filtrado = df_filtrado[df_filtrado["Estado_Consola"].isin(estado_consola)]
-
-if genero:
-    df_filtrado = df_filtrado[df_filtrado["Genre"].isin(genero)]
-
-if pegi_categoria:
-    df_filtrado = df_filtrado[df_filtrado["PEGI_categoria"].isin(pegi_categoria)]
-
-if duracion_juego:
-    df_filtrado = df_filtrado[df_filtrado["Duracion_juego_cat"].isin(duracion_juego)]
-
-# Filtro de precio (siempre se aplica)
-df_filtrado = df_filtrado[df_filtrado["Price"].between(price_range[0], price_range[1])]
-
-st.write (f"Se encontraron {df_filtrado.shape[0]} videojuegos")
-st.dataframe(df_filtrado)
+st.dataframe(ventas_df)
+st.dataframe(competencia_df)

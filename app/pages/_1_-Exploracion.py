@@ -47,7 +47,7 @@ st.markdown(
     unsafe_allow_html=True
 )
 
-st.title ("Explorador de artículos deportivos (2021-2024) 🕵🏼‍♂️​.")
+st.title ("Explorador de artículos deportivos (2021-2024)​.")
 
 ventas_data = r"D:\forecasting_retailer\data\raw\training\ventas.csv"
 competencia_data = r"D:\forecasting_retailer\data\raw\training\competencia.csv"

@@ -9,7 +9,7 @@ st.markdown(
     f"""
     <style>
     .stApp {{
-        background-image: url("https://images.pexels.com/photos/1346154/pexels-photo-1346154.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2");
+        background-image: url("https://images.pexels.com/photos/163444/sport-treadmill-tor-route-163444.jpeg");
         background-size: cover;
         background-repeat: no-repeat;
         background-attachment: fixed;
@@ -53,7 +53,7 @@ st.markdown(
     </style>
 
     <div class="credit">
-        Autor: <a href="https://www.pexels.com/es-es/@borja-lopez/" target="_blank">Borja Lopez</a> en <a href="https://www.pexels.com/es-es/" target="_blank">Pexels</a>
+        Autor: <a href="https://www.pexels.com/es-es/@pixabay/" target="_blank">pixabay</a> en <a href="https://www.pexels.com/es-es/" target="_blank">Pexels</a>
     </div>
     """,
     unsafe_allow_html=True

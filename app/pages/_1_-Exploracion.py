@@ -69,7 +69,7 @@ if Categoria:
     ventas_df_filtrado= ventas_df_filtrado[ventas_df_filtrado["categoria"].isin(Categoria)]
 
 if Subcategoria:
-    ventas_df_filtrado = ventas_df_filtrado[ventas_df_filtrado["subcateogria"].isin(Subcategoria)]
+    ventas_df_filtrado = ventas_df_filtrado[ventas_df_filtrado["subcategoria"].isin(Subcategoria)]
 
 # Filtro de precio (siempre se aplica)
 ventas_df_filtrado = ventas_df_filtrado[ventas_df_filtrado["precio_base"].between(price_range[0], price_range[1])]

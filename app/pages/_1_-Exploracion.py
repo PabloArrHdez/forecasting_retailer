@@ -61,3 +61,18 @@ Categoria = st.sidebar.multiselect("categoria", ventas_df["categoria"].unique())
 Subcategoria = st.sidebar.multiselect("subcategoria", ventas_df["subcategoria"].unique())
 precio_min, precio_max = ventas_df["precio_base"].min(), ventas_df["precio_base"].max()
 price_range = st.sidebar.slider("Precio Artículo", precio_min, precio_max, (precio_min, precio_max))
+
+# Aplicar filtros uno a uno (solo si hay selección)
+ventas_df_filtrado = ventas_df.copy()
+
+if Categoria:
+    ventas_df_filtrado= ventas_df_filtrado[ventas_df_filtrado["categoria"].isin(Categoria)]
+
+if Subcategoria:
+    ventas_df_filtrado = ventas_df_filtrado[ventas_df_filtrado["subcateogria"].isin(Subcategoria)]
+
+# Filtro de precio (siempre se aplica)
+ventas_df_filtrado = ventas_df_filtrado[ventas_df_filtrado["precio_base"].between(price_range[0], price_range[1])]
+
+st.write (f"Se encontraron {ventas_df_filtrado.shape[0]} artículos deportivos")
+st.dataframe(ventas_df_filtrado)

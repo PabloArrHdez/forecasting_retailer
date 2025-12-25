@@ -54,3 +54,10 @@ ventas_data = r"D:\forecasting_retailer\data\raw\training\ventas.csv"
 ventas_df = pd.read_csv(ventas_data)
 
 st.dataframe(ventas_df)
+
+## Sidebar para filtros ##
+st.sidebar.header("Filtrar")
+Categoria = st.sidebar.multiselect("categoria", ventas_df["categoria"].unique())
+Subcategoria = st.sidebar.multiselect("subcategoria", ventas_df["subcategoria"].unique())
+precio_min, precio_max = ventas_df["precio_base"].min(), ventas_df["precio_base"].max()
+price_range = st.sidebar.slider("Precio Artículo", precio_min, precio_max, (precio_min, precio_max))

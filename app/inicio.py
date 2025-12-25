@@ -14,7 +14,10 @@ st.markdown(
         background-repeat: no-repeat;
         background-attachment: fixed;
     }}
-    h1, h2, h3, h4, h5, h6, p, div, span {{
+      h1, p, div, span {{
+        color: black !important;
+    }}
+    h2, h3, h4, h5, h6, p, div, span {{
         color: white !important;
     }}
         section[data-testid="stSidebar"] > div {{

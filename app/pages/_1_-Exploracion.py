@@ -41,7 +41,7 @@ st.markdown(
     </style>
 
     <div class="credit">
-        Autor: <a href="https://www.pexels.com/es-es/@dom-j-7304/" target="_blank">Ben Dom J</a> en <a href="https://unsplash.com/es" target="_blank">Unsplash</a>
+        Autor: <a href="https://www.pexels.com/es-es/@dom-j-7304/" target="_blank">Dom J</a> en <a href="https://unsplash.com/es" target="_blank">Unsplash</a>
     </div>
     """,
     unsafe_allow_html=True

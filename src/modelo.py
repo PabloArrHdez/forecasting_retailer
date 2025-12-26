@@ -12,6 +12,27 @@ from sklearn.base import BaseEstimator, TransformerMixin
 df_data = r"D:\forecasting_retailer\data\processed\df.csv"
 df = pd.read_csv(df_data)
 
+class ColumnSelector(BaseEstimator, TransformerMixin):
+    """Selecciona columnas específicas excluyendo las no deseadas."""
+    def __init__(self, exclude_cols=None, exclude_dtypes=None):
+        self.exclude_cols = exclude_cols or []
+        self.exclude_dtypes = exclude_dtypes or []
+
+    def fit(self, X, y=None):
+        # Identifica las columnas a mantener
+        self.feature_names_ = [
+            col for col in X.columns 
+            if col not in self.exclude_cols 
+            and X[col].dtype not in self.exclude_dtypes
+        ]
+        return self
+
+    def transform(self, X):
+        return X[self.feature_names_]
+
+    def get_feature_names_out(self, input_features=None):
+        return np.array(self.feature_names_)
+
 def entrenamiento (df):
     train_df = df[df['año'].isin([2021, 2022, 2023])].copy()
     validation_df = df[df['año'] == 2024].copy()
@@ -25,8 +46,6 @@ def train_validation (df):
     return validation_df, train_df
 
 def estimador (df):
-    class ColumnSelector(BaseEstimator, TransformerMixin):
-        """Selecciona columnas específicas excluyendo las no deseadas."""
     
     def __init__(self, exclude_cols=None, exclude_dtypes=None):
         self.exclude_cols = exclude_cols or []

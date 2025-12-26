@@ -4,33 +4,15 @@ import pandas as pd
 import joblib
 import matplotlib.pyplot as plt
 import seaborn as sns
-from sklearn.base import BaseEstimator, TransformerMixin
+import sys
+from pathlib import Path
 
-# ============== DEFINIR CLASES PERSONALIZADAS ==============
-# IMPORTANTE: Definir ANTES de cargar el modelo
-class ColumnSelector(BaseEstimator, TransformerMixin):
-    """Transformador personalizado para seleccionar columnas"""
-    def __init__(self, columns):
-        self.columns = columns
-    
-    def fit(self, X, y=None):
-        return self
-    
-    def transform(self, X):
-        return X[self.columns]
+# Agregar el directorio raíz al path para poder importar transformers
+root_path = Path(__file__).parent.parent
+sys.path.insert(0, str(root_path))
 
-# Si usaste otros transformadores personalizados, agrégalos aquí también
-# Por ejemplo:
-# class OtroTransformador(BaseEstimator, TransformerMixin):
-#     def __init__(self, param):
-#         self.param = param
-#     
-#     def fit(self, X, y=None):
-#         return self
-#     
-#     def transform(self, X):
-#         # tu lógica aquí
-#         return X
+# Importar transformadores personalizados
+from transformers import ColumnSelector
 
 # ============== CONFIGURACIÓN DE LA PÁGINA ==============
 st.set_page_config(

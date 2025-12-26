@@ -10,9 +10,6 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../../s
 from column_selector import ColumnSelector
 from datetime import datetime, timedelta
 
-# Importar ColumnSelector para que joblib pueda deserializar el modelo
-from src.column_selector import ColumnSelector
-
 # Configuración de la página
 st.set_page_config(
     page_title="Predicciones Ventas Noviembre 2025",

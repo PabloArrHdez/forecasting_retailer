@@ -4,6 +4,10 @@ import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
 import joblib
+import sys
+import os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../../src')))
+from column_selector import ColumnSelector
 from datetime import datetime, timedelta
 
 # Importar ColumnSelector para que joblib pueda deserializar el modelo

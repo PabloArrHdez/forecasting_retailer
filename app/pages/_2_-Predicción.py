@@ -35,12 +35,12 @@ st.markdown("""
 @st.cache_resource
 def cargar_modelo():
     """Cargar el modelo entrenado"""
-    return joblib.load(r"C:\Users\pablo\OneDrive\Escritorio\DS4B\models\modelo_final.joblib")
+    return joblib.load(r"D:\forecasting_retailer\model\modelo_final.joblib")
 
 @st.cache_data
 def cargar_datos():
     """Cargar los datos de inferencia"""
-    return pd.read_csv(r"C:\Users\pablo\OneDrive\Escritorio\DS4B\data\processed\inferencia_df_transformado.csv")
+    return pd.read_csv(r"D:\forecasting_retailer\data\processed\inferencia_df_transformado.csv")
 
 def obtener_columnas_predictoras(df):
     """Obtener columnas para predicción"""

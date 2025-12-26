@@ -6,6 +6,9 @@ import seaborn as sns
 import joblib
 from datetime import datetime, timedelta
 
+# Importar ColumnSelector para que joblib pueda deserializar el modelo
+from src.column_selector import ColumnSelector
+
 # Configuración de la página
 st.set_page_config(
     page_title="Predicciones Ventas Noviembre 2025",

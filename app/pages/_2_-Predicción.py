@@ -2,8 +2,37 @@ import streamlit as st
 import numpy as np
 import pandas as pd
 import joblib
+import matplotlib.pyplot as plt
+import seaborn as sns
+from sklearn.base import BaseEstimator, TransformerMixin
 
-# Configuración de la página
+# ============== DEFINIR CLASES PERSONALIZADAS ==============
+# IMPORTANTE: Definir ANTES de cargar el modelo
+class ColumnSelector(BaseEstimator, TransformerMixin):
+    """Transformador personalizado para seleccionar columnas"""
+    def __init__(self, columns):
+        self.columns = columns
+    
+    def fit(self, X, y=None):
+        return self
+    
+    def transform(self, X):
+        return X[self.columns]
+
+# Si usaste otros transformadores personalizados, agrégalos aquí también
+# Por ejemplo:
+# class OtroTransformador(BaseEstimator, TransformerMixin):
+#     def __init__(self, param):
+#         self.param = param
+#     
+#     def fit(self, X, y=None):
+#         return self
+#     
+#     def transform(self, X):
+#         # tu lógica aquí
+#         return X
+
+# ============== CONFIGURACIÓN DE LA PÁGINA ==============
 st.set_page_config(
     page_title="Predicciones Ventas Noviembre 2025",
     page_icon="📊",
@@ -36,12 +65,23 @@ st.markdown("""
 @st.cache_resource
 def cargar_modelo():
     """Cargar el modelo entrenado"""
-    return joblib.load(r"D:\forecasting_retailer\model\modelo_final.joblib")
+    try:
+        modelo = joblib.load(r"D:\forecasting_retailer\model\modelo_final.joblib")
+        st.sidebar.success("✅ Modelo cargado exitosamente")
+        return modelo
+    except Exception as e:
+        st.error(f"❌ Error al cargar el modelo: {str(e)}")
+        st.stop()
 
 @st.cache_data
 def cargar_datos():
     """Cargar los datos de inferencia"""
-    return pd.read_csv(r"D:\forecasting_retailer\data\processed\inferencia_df_transformado.csv")
+    try:
+        df = pd.read_csv(r"D:\forecasting_retailer\data\processed\inferencia_df_transformado.csv")
+        return df
+    except Exception as e:
+        st.error(f"❌ Error al cargar los datos: {str(e)}")
+        st.stop()
 
 def obtener_columnas_predictoras(df):
     """Obtener columnas para predicción"""
@@ -132,7 +172,7 @@ def realizar_predicciones_recursivas(df, modelo, productos_unicos, columnas_pred
     
     return pd.DataFrame(resultados)
 
-# Cargar datos
+# ============== CARGAR MODELO Y DATOS ==============
 modelo = cargar_modelo()
 df_original = cargar_datos()
 
@@ -153,7 +193,7 @@ productos_list = sorted(df['nombre'].unique())
 productos_seleccionados = st.sidebar.multiselect(
     "Selecciona productos para visualizar:",
     productos_list,
-    default=productos_list[:5]
+    default=productos_list[:5] if len(productos_list) >= 5 else productos_list
 )
 
 # Categorías
@@ -194,9 +234,10 @@ if categoria_filtro != "Todas":
 else:
     df_predicciones_filtrado = df_predicciones.copy()
 
-df_predicciones_filtrado = df_predicciones_filtrado[
-    df_predicciones_filtrado['nombre'].isin(productos_seleccionados)
-].copy()
+if productos_seleccionados:
+    df_predicciones_filtrado = df_predicciones_filtrado[
+        df_predicciones_filtrado['nombre'].isin(productos_seleccionados)
+    ].copy()
 
 # ============== KPIs ==============
 col1, col2, col3, col4 = st.columns(4)
@@ -220,116 +261,119 @@ with col4:
 st.markdown("---")
 
 # ============== GRÁFICOS ==============
-col_grafico_izq, col_grafico_der = st.columns(2)
+if not df_predicciones_filtrado.empty:
+    col_grafico_izq, col_grafico_der = st.columns(2)
 
-with col_grafico_izq:
-    st.subheader("📊 Predicciones por Día")
-    
-    # Agrupar por día
-    ventas_diarias = df_predicciones_filtrado.groupby('dia')['prediccion'].sum().reset_index()
-    
-    fig, ax = plt.subplots(figsize=(10, 5))
-    sns.lineplot(data=ventas_diarias, x='dia', y='prediccion', marker='o', 
-                 linewidth=2.5, markersize=8, color='#667eea', ax=ax)
-    sns.set_style("whitegrid")
-    ax.set_xlabel('Día de Noviembre', fontsize=11, fontweight='bold')
-    ax.set_ylabel('Unidades Predichas', fontsize=11, fontweight='bold')
-    ax.fill_between(ventas_diarias['dia'], ventas_diarias['prediccion'], alpha=0.2, color='#667eea')
-    plt.tight_layout()
-    st.pyplot(fig)
+    with col_grafico_izq:
+        st.subheader("📊 Predicciones por Día")
+        
+        # Agrupar por día
+        ventas_diarias = df_predicciones_filtrado.groupby('dia')['prediccion'].sum().reset_index()
+        
+        fig, ax = plt.subplots(figsize=(10, 5))
+        sns.lineplot(data=ventas_diarias, x='dia', y='prediccion', marker='o', 
+                     linewidth=2.5, markersize=8, color='#667eea', ax=ax)
+        sns.set_style("whitegrid")
+        ax.set_xlabel('Día de Noviembre', fontsize=11, fontweight='bold')
+        ax.set_ylabel('Unidades Predichas', fontsize=11, fontweight='bold')
+        ax.fill_between(ventas_diarias['dia'], ventas_diarias['prediccion'], alpha=0.2, color='#667eea')
+        plt.tight_layout()
+        st.pyplot(fig)
 
-with col_grafico_der:
-    st.subheader("🏆 Top 5 Productos")
-    
-    top_productos = df_predicciones_filtrado.groupby('nombre')['prediccion'].sum().nlargest(5)
-    
-    fig, ax = plt.subplots(figsize=(10, 5))
-    sns.barplot(y=top_productos.index, x=top_productos.values, palette='husl', ax=ax)
-    ax.set_xlabel('Unidades Predichas', fontsize=11, fontweight='bold')
-    ax.set_ylabel('')
-    ax.set_title('')
-    
-    for i, v in enumerate(top_productos.values):
-        ax.text(v + 5, i, f'{v:,.0f}', va='center', fontweight='bold')
-    
-    plt.tight_layout()
-    st.pyplot(fig)
+    with col_grafico_der:
+        st.subheader("🏆 Top 5 Productos")
+        
+        top_productos = df_predicciones_filtrado.groupby('nombre')['prediccion'].sum().nlargest(5)
+        
+        fig, ax = plt.subplots(figsize=(10, 5))
+        sns.barplot(y=top_productos.index, x=top_productos.values, palette='husl', ax=ax)
+        ax.set_xlabel('Unidades Predichas', fontsize=11, fontweight='bold')
+        ax.set_ylabel('')
+        ax.set_title('')
+        
+        for i, v in enumerate(top_productos.values):
+            ax.text(v + 5, i, f'{v:,.0f}', va='center', fontweight='bold')
+        
+        plt.tight_layout()
+        st.pyplot(fig)
 
-st.markdown("---")
+    st.markdown("---")
 
-# ============== GRÁFICOS SECUNDARIOS ==============
-col_sec_izq, col_sec_der = st.columns(2)
+    # ============== GRÁFICOS SECUNDARIOS ==============
+    col_sec_izq, col_sec_der = st.columns(2)
 
-with col_sec_izq:
-    st.subheader("📂 Predicciones por Categoría")
-    
-    ventas_categoria = df_predicciones_filtrado.groupby('categoria')['prediccion'].sum().reset_index()
-    
-    fig, ax = plt.subplots(figsize=(10, 5))
-    colors = sns.color_palette("Set2", len(ventas_categoria))
-    sns.barplot(data=ventas_categoria, x='categoria', y='prediccion', palette=colors, ax=ax)
-    ax.set_xlabel('Categoría', fontsize=11, fontweight='bold')
-    ax.set_ylabel('Unidades Predichas', fontsize=11, fontweight='bold')
-    plt.xticks(rotation=45, ha='right')
-    
-    for i, v in enumerate(ventas_categoria['prediccion'].values):
-        ax.text(i, v + 5, f'{v:,.0f}', ha='center', fontweight='bold')
-    
-    plt.tight_layout()
-    st.pyplot(fig)
+    with col_sec_izq:
+        st.subheader("📂 Predicciones por Categoría")
+        
+        ventas_categoria = df_predicciones_filtrado.groupby('categoria')['prediccion'].sum().reset_index()
+        
+        fig, ax = plt.subplots(figsize=(10, 5))
+        colors = sns.color_palette("Set2", len(ventas_categoria))
+        sns.barplot(data=ventas_categoria, x='categoria', y='prediccion', palette=colors, ax=ax)
+        ax.set_xlabel('Categoría', fontsize=11, fontweight='bold')
+        ax.set_ylabel('Unidades Predichas', fontsize=11, fontweight='bold')
+        plt.xticks(rotation=45, ha='right')
+        
+        for i, v in enumerate(ventas_categoria['prediccion'].values):
+            ax.text(i, v + 5, f'{v:,.0f}', ha='center', fontweight='bold')
+        
+        plt.tight_layout()
+        st.pyplot(fig)
 
-with col_sec_der:
-    st.subheader("📈 Distribución de Predicciones")
-    
-    fig, ax = plt.subplots(figsize=(10, 5))
-    sns.histplot(data=df_predicciones_filtrado, x='prediccion', bins=30, 
-                 kde=True, color='#764ba2', ax=ax)
-    ax.set_xlabel('Unidades Predichas', fontsize=11, fontweight='bold')
-    ax.set_ylabel('Frecuencia', fontsize=11, fontweight='bold')
-    plt.tight_layout()
-    st.pyplot(fig)
+    with col_sec_der:
+        st.subheader("📈 Distribución de Predicciones")
+        
+        fig, ax = plt.subplots(figsize=(10, 5))
+        sns.histplot(data=df_predicciones_filtrado, x='prediccion', bins=30, 
+                     kde=True, color='#764ba2', ax=ax)
+        ax.set_xlabel('Unidades Predichas', fontsize=11, fontweight='bold')
+        ax.set_ylabel('Frecuencia', fontsize=11, fontweight='bold')
+        plt.tight_layout()
+        st.pyplot(fig)
 
-st.markdown("---")
+    st.markdown("---")
 
-# ============== TABLA DE DETALLES ==============
-if mostrar_detalles:
-    st.subheader("📋 Detalles de Predicciones")
-    
-    # Crear tabla con formato
-    df_tabla = df_predicciones_filtrado.copy()
-    df_tabla['fecha'] = df_tabla['fecha'].dt.strftime('%d/%m/%Y')
-    df_tabla['prediccion'] = df_tabla['prediccion'].round(2)
-    df_tabla = df_tabla.sort_values(['dia', 'nombre'])
-    
-    st.dataframe(
-        df_tabla[['fecha', 'nombre', 'categoria', 'prediccion']].rename(
-            columns={
-                'fecha': 'Fecha',
-                'nombre': 'Producto',
-                'categoria': 'Categoría',
-                'prediccion': 'Unidades Predichas'
-            }
-        ),
-        use_container_width=True,
-        hide_index=True
-    )
+    # ============== TABLA DE DETALLES ==============
+    if mostrar_detalles:
+        st.subheader("📋 Detalles de Predicciones")
+        
+        # Crear tabla con formato
+        df_tabla = df_predicciones_filtrado.copy()
+        df_tabla['fecha'] = df_tabla['fecha'].dt.strftime('%d/%m/%Y')
+        df_tabla['prediccion'] = df_tabla['prediccion'].round(2)
+        df_tabla = df_tabla.sort_values(['dia', 'nombre'])
+        
+        st.dataframe(
+            df_tabla[['fecha', 'nombre', 'categoria', 'prediccion']].rename(
+                columns={
+                    'fecha': 'Fecha',
+                    'nombre': 'Producto',
+                    'categoria': 'Categoría',
+                    'prediccion': 'Unidades Predichas'
+                }
+            ),
+            use_container_width=True,
+            hide_index=True
+        )
 
-st.markdown("---")
+    st.markdown("---")
 
-# ============== ESTADÍSTICAS FINALES ==============
-col_stat1, col_stat2, col_stat3 = st.columns(3)
+    # ============== ESTADÍSTICAS FINALES ==============
+    col_stat1, col_stat2, col_stat3 = st.columns(3)
 
-with col_stat1:
-    desv_est = df_predicciones_filtrado.groupby('dia')['prediccion'].sum().std()
-    st.metric("📊 Desv. Estándar Diaria", f"{desv_est:,.0f}")
+    with col_stat1:
+        desv_est = df_predicciones_filtrado.groupby('dia')['prediccion'].sum().std()
+        st.metric("📊 Desv. Estándar Diaria", f"{desv_est:,.0f}")
 
-with col_stat2:
-    coef_variacion = (desv_est / promedio_diario) * 100 if promedio_diario > 0 else 0
-    st.metric("📉 Coef. Variación", f"{coef_variacion:.1f}%")
+    with col_stat2:
+        coef_variacion = (desv_est / promedio_diario) * 100 if promedio_diario > 0 else 0
+        st.metric("📉 Coef. Variación", f"{coef_variacion:.1f}%")
 
-with col_stat3:
-    rango = max_dia - df_predicciones_filtrado.groupby('dia')['prediccion'].sum().min()
-    st.metric("📏 Rango", f"{rango:,.0f}")
+    with col_stat3:
+        rango = max_dia - df_predicciones_filtrado.groupby('dia')['prediccion'].sum().min()
+        st.metric("📏 Rango", f"{rango:,.0f}")
+else:
+    st.warning("⚠️ No hay datos para mostrar con los filtros seleccionados.")
 
 st.markdown("---")
 st.caption("🤖 Aplicación de predicciones con HistGradientBoostingRegressor | Noviembre 2025")

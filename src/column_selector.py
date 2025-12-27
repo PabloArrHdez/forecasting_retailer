@@ -16,6 +16,12 @@ class ColumnSelector(BaseEstimator, TransformerMixin):
         return self
 
     def transform(self, X):
+        # Depuración: muestra las columnas esperadas y las que tiene X
+        print("Esperadas:", self.feature_names_)
+        print("X.columns:", list(X.columns))
+        # Assert para forzar error si falta alguna columna
+        for col in self.feature_names_:
+            assert col in X.columns, f"Falta la columna: {col}"
         return X[self.feature_names_]
 
     def get_feature_names_out(self, input_features=None):

@@ -11,7 +11,7 @@ class ColumnSelector(BaseEstimator, TransformerMixin):
         self.feature_names_ = [
             col for col in X.columns 
             if col not in self.exclude_cols 
-            and X[col].dtype not in self.exclude_dtypes
+            and X[col].dtype.name not in self.exclude_dtypes
         ]
         return self
 

@@ -45,6 +45,14 @@ def cargar_modelo():
     """Cargar el modelo entrenado"""
     return joblib.load(r"D:\forecasting_retailer\model\modelo_final.joblib")
 
+def cargar_columnas_entrenamiento():
+    """Cargar la lista de columnas usadas en el entrenamiento"""
+    path_cols = r"D:\forecasting_retailer\model\columnas_entrenamiento.joblib"
+    if os.path.exists(path_cols):
+        return joblib.load(path_cols)
+    else:
+        return None
+
 @st.cache_data
 def cargar_datos():
     """Cargar los datos de inferencia"""
@@ -82,31 +90,34 @@ def realizar_predicciones_recursivas(df, modelo, productos_unicos, columnas_pred
     """Realizar predicciones recursivas para todos los días de noviembre"""
     resultados = []
     predicciones_por_producto = {prod: [] for prod in productos_unicos}
-    
+    # Cargar columnas de entrenamiento
+    columnas_entrenamiento = cargar_columnas_entrenamiento()
+    if columnas_entrenamiento is None:
+        columnas_entrenamiento = columnas_pred
     # Días de noviembre
     dias_noviembre = sorted(df['dia_mes'].unique())
-    
     for dia in dias_noviembre:
         df_dia = df[df['dia_mes'] == dia].copy()
-        
         for producto_id in productos_unicos:
             df_prod = df_dia[df_dia['producto_id'] == producto_id].copy()
-            
             if df_prod.empty:
                 continue
-            
-            # Obtener características
-            X = df_prod[columnas_pred].values
-            
+            # Obtener características y asegurar columnas
+            X_df = df_prod[columnas_pred].copy()
+            # Añadir columnas que falten
+            for col in columnas_entrenamiento:
+                if col not in X_df.columns:
+                    X_df[col] = 0
+            # Reordenar columnas
+            X_df = X_df[columnas_entrenamiento]
+            X = X_df.values
             # Realizar predicción
             pred = modelo.predict(X)[0]
             pred = max(0, pred)  # Asegurar que no sea negativo
-            
             # Almacenar resultado
             fecha = pd.to_datetime(df_prod['fecha'].values[0])
             nombre = df_prod['nombre'].values[0]
             categoria = df_prod['categoria'].values[0]
-            
             resultados.append({
                 'fecha': fecha,
                 'dia': dia,
@@ -115,7 +126,6 @@ def realizar_predicciones_recursivas(df, modelo, productos_unicos, columnas_pred
                 'categoria': categoria,
                 'prediccion': pred
             })
-            
             # Guardar predicción para actualizar lags
             predicciones_por_producto[producto_id].append(pred)
         

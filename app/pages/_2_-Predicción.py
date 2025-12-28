@@ -104,12 +104,8 @@ def realizar_predicciones_recursivas(df, modelo, productos_unicos, columnas_pred
                 continue
             # Obtener características y asegurar columnas
             X_df = df_prod[columnas_pred].copy()
-            # Añadir columnas que falten
-            for col in columnas_entrenamiento:
-                if col not in X_df.columns:
-                    X_df[col] = 0
-            # Reordenar columnas
-            X_df = X_df[columnas_entrenamiento]
+            # Asegurar que X_df tenga exactamente las columnas de entrenamiento (faltantes=0, sobrantes fuera, orden correcto)
+            X_df = X_df.reindex(columns=columnas_entrenamiento, fill_value=0)
             X = X_df.values
             # Realizar predicción
             pred = modelo.predict(X)[0]

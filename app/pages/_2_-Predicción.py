@@ -23,7 +23,7 @@ st.markdown(
     f"""
     <style>
     .stApp {{
-        background-image: url("https://images.unsplash.com/photo-1529078155058-5d716f45d604?q=80&w=869&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D");
+        background-image: url("https://images.unsplash.com/photo-1581094289810-adf5d25690e3?q=80&w=870&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D");
         background-size: cover;
         background-repeat: no-repeat;
         background-attachment: fixed;

@@ -23,7 +23,7 @@ st.markdown(
     f"""
     <style>
     .stApp {{
-        background-image: url("https://images.unsplash.com/photo-1644088379091-d574269d422f?q=80&w=1093&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D");
+        background-image: url("https://images.pexels.com/photos/45056/pexels-photo-45056.jpeg");
         background-size: cover;
         background-repeat: no-repeat;
         background-attachment: fixed;
@@ -31,13 +31,13 @@ st.markdown(
     h1, h2, h3, h4, h5, h6, p, span {{
         color: white !important;
     }}
-    section[data-testid="stSidebar"] > div {{
+        section[data-testid="stSidebar"] > div {{
         background-color: rgba(0, 0, 0, 0.6);
         padding: 15px;
         border-radius: 10px;
         box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
     }}
-    /* Créditos de la imagen */
+        /* Créditos de la imagen */
     .credit {{
         position: fixed;
         bottom: 10px;
@@ -51,18 +51,11 @@ st.markdown(
         box-shadow: 0 0 6px rgba(255, 255, 255, 0.4);
         z-index: 100;
     }}
-    .credit a {{
+        .credit a {{
         color: white;
         text-decoration: underline;
     }}
-    /* Personalización de los widgets st.metric */
-    div[data-testid="stMetric"] {{
-        color: white !important;
-        background: transparent !important;
-    }}
-    div[data-testid="stMetric"] span {{
-        color: white !important;
-    }}
+
     </style>
 
     <div class="credit">

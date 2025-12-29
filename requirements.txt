@@ -2,7 +2,7 @@ pandas
 numpy<2.0
 matplotlib<3.9
 seaborn
-scikit-learn<1.4
+scikit-learn==1.6.1
 streamlit
 holidays
 joblib

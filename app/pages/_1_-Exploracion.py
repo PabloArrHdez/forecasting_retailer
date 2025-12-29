@@ -49,7 +49,7 @@ st.markdown(
 
 st.title ("Explorador de artículos deportivos (2021-2024)​.")
 
-ventas_data = r"D:\forecasting_retailer\data\raw\training\ventas.csv"
+ventas_data = "data/raw/training/ventas.csv"
 
 ventas_df = pd.read_csv(ventas_data)
 

@@ -68,11 +68,11 @@ st.markdown(
 @st.cache_resource
 def cargar_modelo():
     """Cargar el modelo entrenado"""
-    return joblib.load(r"D:\forecasting_retailer\model\modelo_final.joblib")
+    return joblib.load("model/modelo_final.joblib")
 
 def cargar_columnas_entrenamiento():
     """Cargar la lista de columnas usadas en el entrenamiento"""
-    path_cols = r"D:\forecasting_retailer\model\columnas_entrenamiento.joblib"
+    path_cols = "model/columnas_entrenamiento.joblib"
     if os.path.exists(path_cols):
         return joblib.load(path_cols)
     else:
@@ -81,7 +81,7 @@ def cargar_columnas_entrenamiento():
 @st.cache_data
 def cargar_datos():
     """Cargar los datos de inferencia"""
-    return pd.read_csv(r"D:\forecasting_retailer\data\processed\inferencia_df_transformado.csv")
+    return pd.read_csv("data/processed/inferencia_df_transformado.csv")
 
 def obtener_columnas_predictoras(df):
     """Obtener columnas para predicción"""
